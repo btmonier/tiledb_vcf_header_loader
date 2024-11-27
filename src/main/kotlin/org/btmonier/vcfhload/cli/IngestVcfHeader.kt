@@ -8,8 +8,10 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.file
+import htsjdk.variant.vcf.VCFFileReader
 import io.tiledb.java.api.Context
 import org.btmonier.vcfhload.utils.createArray
+import org.btmonier.vcfhload.utils.parseALTHeader
 import org.btmonier.vcfhload.utils.writeArray
 import java.io.File
 
@@ -48,12 +50,12 @@ class IngestVcfHeader : CliktCommand() {
         .help("Output path to TileDB instance")
 
     override fun run() {
-//        val head = VCFFileReader(vcfPath, false).fileHeader
-//        val meta = parseALTHeader(header = head).map { it.value }
+        val head = VCFFileReader(vcfPath, false).fileHeader
+        val meta = parseALTHeader(header = head).map { it.value }
 
         val ctx = Context()
         createArray(ctx, dbPath)
-        writeArray(ctx, dbPath)
+        writeArray(ctx, dbPath, meta)
     }
 }
 
